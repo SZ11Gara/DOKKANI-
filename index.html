@@ -186,6 +186,33 @@ footer span {
   <br>
   A project by <span>SZ11</span>
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script>
+const SUPABASE_URL = "https://lshhqmhavwnwfvjzfanc.supabase.co";
+
+const SUPABASE_KEY = "sb_publishable_2JRALtUH5kzMw2D-8ZaI9g_nlqperny";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+async function testConnection() {
+  const { data, error } = await supabaseClient
+    .from("stores")
+    .select("id")
+    .limit(1);
+
+  if (error) {
+    console.error("DOKKANI connection error:", error.message);
+    alert("حدث خطأ في الاتصال بقاعدة البيانات");
+  } else {
+    alert("تم ربط DOKKANI بقاعدة البيانات بنجاح!");
+  }
+}
+
+testConnection();
+</script>
 </body>
 </html>
