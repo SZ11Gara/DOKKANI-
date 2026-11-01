@@ -233,65 +233,38 @@ testConnection();
 <p id="regMessage" style="text-align:center"></p>
 </section>
 
+
 <script>
-alert("زر التسجيل يعمل!");
 async function registerDokkani() {
- const name = document.getElementById("regName").value.trim();
- const email = document.getElementById("regEmail").value.trim();
- const password = document.getElementById("regPassword").value;
- const role = document.getElementById("regRole").value;
- const msg = document.getElementById("regMessage");
+  const name = document.getElementById("regName").value.trim();
+  const email = document.getElementById("regEmail").value.trim();
+  const password = document.getElementById("regPassword").value;
+  const role = document.getElementById("regRole").value;
+  const msg = document.getElementById("regMessage");
 
- if (!name || !email || !password) {
-   msg.textContent = "يرجى ملء جميع الحقول";
-   return;
- }
+  if (!name || !email || !password) {
+    msg.textContent = "يرجى ملء جميع الحقول";
+    return;
+  }
 
- if (password.length < 8) {
-   msg.textContent = "كلمة المرور يجب أن تكون 8 أحرف على الأقل";
-   return;
- }
+  if (password.length < 8) {
+    msg.textContent = "كلمة المرور يجب أن تكون 8 أحرف على الأقل";
+    return;
+  }
 
- const {data,error} = await supabaseClient.auth.signUp ({
-   email,
-   password,
-   options: {
-     data: {
-       full_name: name,
-       role: role
-     }
-   }
- });
+  const { data, error } = await supabaseClient.auth.signUp({
+    email,
+    password,
+    options: {
+      data: { full_name: name, role: role }
+    }
+  });
 
- if(error) {
-   msg.textContent = error.message;
- } else {
-   msg.textContent = data.session
-     ? "تم إنشاء حسابك بنجاح!"
-     : "تم التسجيل! تحقق من بريدك الإلكتروني لتأكيد الحساب.";
- }
+  msg.textContent = error
+    ? error.message
+    : "تم إنشاء الحساب بنجاح!";
 }
-</script>
-<section style="max-width:400px;margin:40px auto;padding:25px;background:white;border-radius:15px;border:1px solid #ddd">
-  <h2 style="text-align:center;color:#087b50">تسجيل الدخول</h2>
 
-  <input id="loginEmail" type="email" placeholder="البريد الإلكتروني"
-  style="width:100%;padding:13px;margin:8px 0;box-sizing:border-box">
-
-  <input id="loginPassword" type="password" placeholder="كلمة المرور"
-  style="width:100%;padding:13px;margin:8px 0;box-sizing:border-box">
-
-  <button onclick="loginDokkani()"
-  style="width:100%;padding:14px;background:#087b50;color:white;border:0;border-radius:9px">
-    دخول
-  </button>
-
-  <p id="loginMessage" style="text-align:center"></p>
-</section>
-
-<script>
-</script>
-async function loginDokkani() {
 async function loginDokkani() {
   const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
@@ -309,60 +282,12 @@ async function loginDokkani() {
     password
   });
 
-  if (error) {
-    msg.textContent = "خطأ: " + error.message;
-  } else {
-    msg.textContent = "تم تسجيل الدخول بنجاح!";
-  }
+  msg.textContent = error
+    ? "خطأ: " + error.message
+    : "تم تسجيل الدخول بنجاح!";
 }
-  const email = document.getElementById("loginEmail").value.trim();
-  const password = document.getElementById("loginPassword").value;
-  const msg = document.getElementById("loginMessage");
 
-  if (!email || !password) {
-    msg.textContent = "يرجى إدخال البريد وكلمة المرور";
-    return;
-  }
-
-  msg.textContent = "جارٍ تسجيل الدخول...";
-
-  const { data, error } = await supabaseClient.auth.signInWithPassword({
-    email,
-    password
-  });
-
-  if (error) {
-    msg.textContent = "خطأ: " + error.message;
-  } else {
-    msg.textContent = "تم تسجيل الدخول بنجاح!";
-  }
-}
-</script>
-
-<section style="max-width:420px;margin:35px auto;padding:24px;background:white;border:1px solid #ddd;border-radius:15px">
-  <h2 style="color:#087b50;text-align:center">افتح متجرك في دكاني</h2>
-  <p style="text-align:center;color:#666">ابدأ بيع منتجاتك عبر DOKKANI</p>
-
-  <input id="storeName" placeholder="اسم متجرك"
-    style="width:100%;padding:13px;margin:8px 0;box-sizing:border-box">
-
-  <textarea id="storeDescription" placeholder="وصف متجرك"
-    style="width:100%;padding:13px;margin:8px 0;box-sizing:border-box"></textarea>
-
-  <button onclick="createDokkaniStore()"
-    style="width:100%;padding:14px;background:#087b50;color:white;border:0;border-radius:9px">
-    إنشاء متجري
-  </button>
-
-  <p id="storeMessage" style="text-align:center"></p>
-  <p style="font-size:13px;color:#777;text-align:center">
-    تفعيل المتجر سيكون بعد استكمال خطوة الدفع والتحقق منها.
-  </p>
-</section>
-
-<script>
 async function createDokkaniStore() {
-alert("زر إنشاء المتجر يعمل!");
   const msg = document.getElementById("storeMessage");
   const name = document.getElementById("storeName").value.trim();
   const description = document.getElementById("storeDescription").value.trim();
@@ -382,22 +307,36 @@ alert("زر إنشاء المتجر يعمل!");
     return;
   }
 
-  const { error } = await supabaseClient
-    .from("stores")
-    .insert({
-      owner_id: userData.user.id,
-      name: name,
-      description: description,
-      is_active: false
-    });
+  const { error } = await supabaseClient.from("stores").insert({
+    owner_id: userData.user.id,
+    name,
+    description,
+    is_active: false
+  });
 
-  if (error) {
-    msg.textContent = "تعذر إنشاء المتجر: " + error.message;
-  } else {
-    msg.textContent = "تم إنشاء متجرك! ينتظر التفعيل بعد التحقق من الدفع.";
-  }
+  msg.textContent = error
+    ? "تعذر إنشاء المتجر: " + error.message
+    : "تم إنشاء متجرك! ينتظر التفعيل بعد التحقق من الدفع.";
 }
 </script>
+
+<section style="max-width:400px;margin:40px auto;padding:25px;background:white;border:1px solid #ddd;border-radius:15px">
+  <h2 style="text-align:center;color:#087b50">تسجيل الدخول</h2>
+  <input id="loginEmail" type="email" placeholder="البريد الإلكتروني" style="width:100%;padding:13px;margin:8px 0;box-sizing:border-box">
+  <input id="loginPassword" type="password" placeholder="كلمة المرور" style="width:100%;padding:13px;margin:8px 0;box-sizing:border-box">
+  <button onclick="loginDokkani()" style="width:100%;padding:14px;background:#087b50;color:white;border:0;border-radius:9px">دخول</button>
+  <p id="loginMessage"></p>
+</section>
+
+<section style="max-width:420px;margin:35px auto;padding:24px;background:white;border:1px solid #ddd;border-radius:15px">
+  <h2 style="color:#087b50;text-align:center">افتح متجرك في دكاني</h2>
+  <p style="text-align:center;color:#666">ابدأ بيع منتجاتك عبر DOKKANI</p>
+  <input id="storeName" placeholder="اسم متجرك" style="width:100%;padding:13px;margin:8px 0;box-sizing:border-box">
+  <textarea id="storeDescription" placeholder="وصف متجرك" style="width:100%;padding:13px;margin:8px 0;box-sizing:border-box"></textarea>
+  <button onclick="createDokkaniStore()" style="width:100%;padding:14px;background:#087b50;color:white;border:0;border-radius:9px">إنشاء متجري</button>
+  <p id="storeMessage" style="text-align:center"></p>
+  <p style="font-size:13px;color:#777;text-align:center">تفعيل المتجر بعد استكمال الدفع والتحقق منه.</p>
+</section>
 
 </body>
 </html>
