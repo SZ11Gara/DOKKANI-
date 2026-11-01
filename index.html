@@ -214,5 +214,62 @@ async function testConnection() {
 
 testConnection();
 </script>
+<section style="max-width:400px;margin:40px auto;padding:25px;background:white;border-radius:15px;border:1px solid #ddd">
+<h2 style="text-align:center;color:#087b50">حساب دكاني</h2>
+
+<input id="regName" placeholder="الاسم الكامل" style="width:100%;padding:13px;margin:8px 0">
+<input id="regEmail" type="email" placeholder="البريد الإلكتروني" style="width:100%;padding:13px;margin:8px 0">
+<input id="regPassword" type="password" placeholder="كلمة المرور" style="width:100%;padding:13px;margin:8px 0">
+
+<select id="regRole" style="width:100%;padding:13px;margin:8px 0">
+<option value="buyer">مشتري</option>
+<option value="seller">بائع</option>
+</select>
+
+<button onclick="registerDokkani()" style="width:100%;padding:14px;background:#087b50;color:white;border:0;border-radius:9px">
+إنشاء حساب
+</button>
+
+<p id="regMessage" style="text-align:center"></p>
+</section>
+
+<script>
+async function registerDokkani() {
+ const name = document.getElementById("regName").value.trim();
+ const email = document.getElementById("regEmail").value.trim();
+ const password = document.getElementById("regPassword").value;
+ const role = document.getElementById("regRole").value;
+ const msg = document.getElementById("regMessage");
+
+ if (!name || !email || !password) {
+   msg.textContent = "يرجى ملء جميع الحقول";
+   return;
+ }
+
+ if (password.length < 8) {
+   msg.textContent = "كلمة المرور يجب أن تكون 8 أحرف على الأقل";
+   return;
+ }
+
+ const {data,error} = await db.auth.signUp({
+   email,
+   password,
+   options: {
+     data: {
+       full_name: name,
+       role: role
+     }
+   }
+ });
+
+ if(error) {
+   msg.textContent = error.message;
+ } else {
+   msg.textContent = data.session
+     ? "تم إنشاء حسابك بنجاح!"
+     : "تم التسجيل! تحقق من بريدك الإلكتروني لتأكيد الحساب.";
+ }
+}
+</script>
 </body>
 </html>
