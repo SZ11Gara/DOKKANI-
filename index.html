@@ -338,5 +338,65 @@ async function loginDokkani() {
   }
 }
 </script>
+
+<section style="max-width:420px;margin:35px auto;padding:24px;background:white;border:1px solid #ddd;border-radius:15px">
+  <h2 style="color:#087b50;text-align:center">افتح متجرك في دكاني</h2>
+  <p style="text-align:center;color:#666">ابدأ بيع منتجاتك عبر DOKKANI</p>
+
+  <input id="storeName" placeholder="اسم متجرك"
+    style="width:100%;padding:13px;margin:8px 0;box-sizing:border-box">
+
+  <textarea id="storeDescription" placeholder="وصف متجرك"
+    style="width:100%;padding:13px;margin:8px 0;box-sizing:border-box"></textarea>
+
+  <button onclick="createDokkaniStore()"
+    style="width:100%;padding:14px;background:#087b50;color:white;border:0;border-radius:9px">
+    إنشاء متجري
+  </button>
+
+  <p id="storeMessage" style="text-align:center"></p>
+  <p style="font-size:13px;color:#777;text-align:center">
+    تفعيل المتجر سيكون بعد استكمال خطوة الدفع والتحقق منها.
+  </p>
+</section>
+
+<script>
+async function createDokkaniStore() {
+  const msg = document.getElementById("storeMessage");
+  const name = document.getElementById("storeName").value.trim();
+  const description = document.getElementById("storeDescription").value.trim();
+
+  if (!name) {
+    msg.textContent = "اكتب اسم متجرك أولاً";
+    return;
+  }
+
+  msg.textContent = "جارٍ إنشاء المتجر...";
+
+  const { data: userData, error: userError } =
+    await supabaseClient.auth.getUser();
+
+  if (userError || !userData.user) {
+    msg.textContent = "يرجى تسجيل الدخول أولاً";
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from("stores")
+    .insert({
+      owner_id: userData.user.id,
+      name: name,
+      description: description,
+      is_active: false
+    });
+
+  if (error) {
+    msg.textContent = "تعذر إنشاء المتجر: " + error.message;
+  } else {
+    msg.textContent = "تم إنشاء متجرك! ينتظر التفعيل بعد التحقق من الدفع.";
+  }
+}
+</script>
+
 </body>
 </html>
