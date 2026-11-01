@@ -314,5 +314,29 @@ async function loginDokkani() {
   }
 }
 </script>
+async function loginDokkani() {
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value;
+  const msg = document.getElementById("loginMessage");
+
+  if (!email || !password) {
+    msg.textContent = "يرجى إدخال البريد وكلمة المرور";
+    return;
+  }
+
+  msg.textContent = "جارٍ تسجيل الدخول...";
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    msg.textContent = "خطأ: " + error.message;
+  } else {
+    msg.textContent = "تم تسجيل الدخول بنجاح!";
+  }
+}
+</script>
 </body>
 </html>
