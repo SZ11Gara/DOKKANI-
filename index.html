@@ -272,5 +272,47 @@ async function registerDokkani() {
  }
 }
 </script>
+<section style="max-width:400px;margin:40px auto;padding:25px;background:white;border-radius:15px;border:1px solid #ddd">
+  <h2 style="text-align:center;color:#087b50">تسجيل الدخول</h2>
+
+  <input id="loginEmail" type="email" placeholder="البريد الإلكتروني"
+  style="width:100%;padding:13px;margin:8px 0;box-sizing:border-box">
+
+  <input id="loginPassword" type="password" placeholder="كلمة المرور"
+  style="width:100%;padding:13px;margin:8px 0;box-sizing:border-box">
+
+  <button onclick="loginDokkani()"
+  style="width:100%;padding:14px;background:#087b50;color:white;border:0;border-radius:9px">
+    دخول
+  </button>
+
+  <p id="loginMessage" style="text-align:center"></p>
+</section>
+
+<script>
+async function loginDokkani() {
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value;
+  const msg = document.getElementById("loginMessage");
+
+  if (!email || !password) {
+    msg.textContent = "يرجى إدخال البريد وكلمة المرور";
+    return;
+  }
+
+  msg.textContent = "جارٍ تسجيل الدخول...";
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    msg.textContent = "خطأ: " + error.message;
+  } else {
+    msg.textContent = "تم تسجيل الدخول بنجاح!";
+  }
+}
+</script>
 </body>
 </html>
